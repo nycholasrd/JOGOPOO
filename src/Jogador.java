@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Jogador {
 	private  String nome;
@@ -5,19 +6,24 @@ public class Jogador {
 	private String CPF;
 	private String email;
 	
-	public String toString(String nome) {
+	public String toString() {
 		return nome;
 	}
 	
 	
-	public Jogador(String nome, Sexo sexo, String CPF, String email) {
+public Jogador(String nome, Sexo sexo, String CPF, String email, ArrayList<Jogador> jogadoresExistentes) {
+	for (Jogador j : jogadoresExistentes) {
+		//faz uma busca no ArrayList se já tiver um jogador cadastrado com essas informações ele nem chega a ser atribuido e é lançado um erro
+		if (j.getCPF() != null && j.getCPF().equals(CPF)) {
+			throw new IllegalArgumentException("Já existe um jogador cadastrado com esse CPF.");
+		}
+		if (j.getEmail() != null && j.getEmail().equalsIgnoreCase(email)) {
+			throw new IllegalArgumentException("Já existe um jogador cadastrado com esse email.");
+		}
 		this.nome = nome;
 		this.sexo = sexo;
-		if(CPF.equals(CPF)!= true) {
-			this.CPF =  CPF;
-		}
-		if(email.equals(email)!= true) {
-			this.email = email;
+		this.CPF =  CPF;
+		this.email = email;
 		}
 	}
 	
