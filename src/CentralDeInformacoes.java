@@ -5,22 +5,25 @@ public class CentralDeInformacoes {
 	private ArrayList<Palavra> todasAsPalavras = new ArrayList<Palavra>();
 
 	public boolean adicionarPalavra(Palavra p) {
-		for(Palavra buscaP: todasAsPalavras) {
-			if(buscaP.equals(p)) {
-				return false;
-			}
+		if (p == null || todasAsPalavras.contains(p)) {
+			return false;
 		}
 		todasAsPalavras.add(p);
 		return true;
 	}
 
-	public boolean recuperarPalavra(Palavra p) {
-		for(Palavra buscaP: todasAsPalavras) {
-			if(buscaP.getPalavra().equals(p)) {
-				return true;
+
+	public Palavra recuperarPalavra(String palavra) {
+		for (Palavra buscaP : todasAsPalavras) {
+			if (buscaP.getPalavra().equalsIgnoreCase(palavra)) {
+				return buscaP;
 			}
 		}
-		return false;
+		return null;
+	}
+
+	public ArrayList<Palavra> getTodasAsPalavras() {
+		return todasAsPalavras;
 	}
 
 	public boolean adicionarJogador(Jogador j) {
