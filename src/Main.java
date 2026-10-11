@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -13,6 +14,10 @@ public class Main {
 			System.out.println("\n1 - Novo jogador");
 			System.out.println("2 - Listar todos os jogadores");
 			System.out.println("3 - Exibir informações de um jogador específico");
+			System.out.println("4 - Salvar palavras a partir de um arquivo CSV");
+			System.out.println("5 - Listar todas as palavras salvas na central");
+			System.out.println("6 - Gerar relatório em PDF");
+			System.out.println("7 - Enviar uma mensagem para todos os jogadores");
 			System.out.println("S - Sair");
 			System.out.print("Opção: ");
 			opcao = sc.nextLine();
@@ -68,6 +73,53 @@ public class Main {
 					System.out.println("Sexo: " + encontrado.getSexo());
 					System.out.println("CPF: " + encontrado.getCPF());
 					System.out.println("Email: " + encontrado.getEmail());
+				}
+
+			} else if (opcao.equals("4")) {
+				System.out.print("Nome do arquivo CSV: ");
+				String nomeCsv = sc.nextLine();
+
+				ArrayList<Palavra> extraidas = ExtratorPalavrasCSV.extrairPalavras(nomeCsv);
+				if (extraidas == null) {
+					System.out.println("Não foi possível extrair as palavras: arquivo inexistente ou fora do formato esperado.");
+				} else {
+					int adicionadas = 0;
+					for (Palavra p : extraidas) {
+						if (central.adicionarPalavra(p)) {
+							adicionadas++;
+						}
+					}
+					persistencia.salvarCentral(central, "central");
+					System.out.println(adicionadas + " palavra(s) adicionada(s); " + (extraidas.size() - adicionadas) + " repetida(s) ignorada(s).");
+				}
+
+			} else if (opcao.equals("5")) {
+				if (central.getTodasAsPalavras().isEmpty()) {
+					System.out.println("Nenhuma palavra cadastrada");
+				} else {
+					System.out.println("Palavras cadastradas");
+					for (Palavra p : central.getTodasAsPalavras()) {
+						System.out.println(p + " [" + p.getNivel() + "]");
+					}
+				}
+
+			} else if (opcao.equals("6")) {
+				GeradorDeRelatorios.gerarRelatorio(central);
+
+			} else if (opcao.equals("7")) {
+				if (central.getTodosOsJogadores().isEmpty()) {
+					System.out.println("Nenhum jogador cadastrado");
+				} else {
+					System.out.print("Assunto: ");
+					String assunto = sc.nextLine();
+					System.out.print("Mensagem: ");
+					String mensagem = sc.nextLine();
+
+					for (Jogador j : central.getTodosOsJogadores()) {
+						if (j.getEmail() != null && !j.getEmail().isEmpty()) {
+							Mensageiro.enviarMensagem(j.getEmail(), assunto, mensagem);
+						}
+					}
 				}
 
 			} else if (!opcao.equalsIgnoreCase("S")) {
